@@ -11,10 +11,10 @@ const ctx = canvas.getContext('2d');
 async function takePic() { 
     console.debug('Drawing webcam photo on canvas...');
     ctx.drawImage(webcam, 0, 0, canvas.width, canvas.height);
-    await sendJsonAjax('POST', '/login', { imageUrl: canvas.toDataURL('image/png') });
+    await ajax('POST', '/login', { url: canvas.toDataURL() }, json=true);
 };
 
-function sendJsonAjax(method, url, data) {
+function ajax(method, url, data, json=False) {
     return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();
         xhr.open(method, url);
@@ -28,7 +28,11 @@ function sendJsonAjax(method, url, data) {
         xhr.onerror = function () {
             reject({status: this.status, statusText: xhr.statusText});
         };
-        xhr.setRequestHeader('Content-Type', 'application/json')
-        xhr.send(JSON.stringify(data));
+        if (json) {
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(data));
+        } else {
+            xhr.send(data)
+        }
     });
 }
