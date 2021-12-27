@@ -14,8 +14,9 @@ async function login() {
     const imageUrl = canvas.toDataURL('image/jpeg');
     try {
         console.log(await ajax('POST', '/login', { imageUrl }, json=true));
+        alert('User Logged in!')
     } catch (error) {
-        if (error.status == 401) { // unauthorized
+        if (error.status == 401) {  // unauthorized
             username = prompt('NEW USER\nYou have not registered yet.\nPlease enter username to register now')
             await ajax('POST', '/register', { username, imageUrl }, json=true)
         }

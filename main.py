@@ -23,7 +23,8 @@ def face_encoding_from_image(img: Image):
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-users = []    # [ (username, face_encoding) ]
+# FIXME - in a real app, this should be replaced with a database
+users = []    # [ { username, data, face_encoding } ]
 
 @app.get('/')
 async def index():
@@ -36,19 +37,22 @@ async def register(req: Request):
     username = json['username']
     img = image_from_url(json['imageUrl'])
     enc = face_encoding_from_image(img)
-    users.append((username, enc))
+    users.append({'username': username, 'data': '', 'face_encoding': enc})
 
 @app.post('/login')
 async def login(req: Request):
     json = await req.json()
     url = json['imageUrl']
     img = image_from_url(url)
-    breakpoint()
     user_enc = face_encoding_from_image(img)
-    user_face_encodings = [enc for _, enc in users]
+    user_face_encodings = [user['face_encoding'] for user in users]
     matches = np.where(fc.face_distance(user_face_encodings, user_enc) <= FACE_DISTANCE_TOLERANCE)[0]
     if matches.size == 0:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, headers = { 'WWW-Authenticate': 'Bearer' })
-    assert matches.size > 1, 'Only 1 face should match'
-    return users[matches[0]]
+    assert matches.size == 1, 'Only 1 face should match'
+    user = users[matches[0]]
+    return {
+        'username': user['username'],
+        'data': user['data']
+    }
     
