@@ -35,16 +35,13 @@ async def register(req: Request):
     # TODO - check that it doesn't already exist!
     json = await req.json()
     username = json['username']
-    img = image_from_url(json['imageUrl'])
-    enc = face_encoding_from_image(img)
+    enc = face_encoding_from_image(image_from_url(json['imageUrl']))
     users.append({'username': username, 'data': '', 'face_encoding': enc})
 
 @app.post('/login')
 async def login(req: Request):
     json = await req.json()
-    url = json['imageUrl']
-    img = image_from_url(url)
-    user_enc = face_encoding_from_image(img)
+    user_enc = face_encoding_from_image(image_from_url(json['imageUrl']))
     user_face_encodings = [user['face_encoding'] for user in users]
     matches = np.where(fc.face_distance(user_face_encodings, user_enc) <= FACE_DISTANCE_TOLERANCE)[0]
     if matches.size == 0:
