@@ -8,10 +8,18 @@ const ctx = canvas.getContext('2d');
     webcam.play();
 })();
 
-async function takePic() { 
+async function login() { 
     console.debug('Drawing webcam photo on canvas...');
     ctx.drawImage(webcam, 0, 0, canvas.width, canvas.height);
-    await ajax('POST', '/login', { url: canvas.toDataURL() }, json=true);
+    const imageUrl = canvas.toDataURL('image/jpeg');
+    try {
+        console.log(await ajax('POST', '/login', { imageUrl }, json=true));
+    } catch (error) {
+        if (error.status == 401) { // unauthorized
+            username = prompt('NEW USER\nYou have not registered yet.\nPlease enter username to register now')
+            await ajax('POST', '/register', { username, imageUrl }, json=true)
+        }
+    }
 };
 
 function ajax(method, url, data, json=False) {
