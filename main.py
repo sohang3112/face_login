@@ -1,3 +1,7 @@
+from typing import Dict
+from io import BytesIO
+import base64
+
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -5,8 +9,7 @@ from starlette.responses import FileResponse
 import numpy as np
 import face_recognition as fc
 from PIL import Image
-from io import BytesIO
-import base64
+
 
 FACE_DISTANCE_TOLERANCE = 0.6
 
@@ -24,7 +27,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # FIXME - in a real app, this should be replaced with a database
-users = []    # [ { username, data, face_encoding } ]
+users: Dict[str, str] = []    # [ { username, data, face_encoding } ]
 
 @app.get('/')
 async def index():
