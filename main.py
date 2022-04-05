@@ -14,7 +14,7 @@ def image_from_base64(string: str) -> Image:
     img_bytes = base64.decodebytes(bytes(string, 'ascii'))
     return Image.open(BytesIO(img_bytes))
 
-def image_from_url(url: str) -> Image:
+def jpeg_image_from_url(url: str) -> Image:
     return image_from_base64(url.removeprefix('data:image/jpeg;base64,'))
 
 def face_encoding_from_image(img: Image):
@@ -35,7 +35,7 @@ async def register(req: Request):
     # TODO - check that it doesn't already exist!
     json = await req.json()
     username = json['username']
-    enc = face_encoding_from_image(image_from_url(json['imageUrl']))
+    enc = face_encoding_from_image(jpeg_image_from_url(json['imageUrl']))
     users.append({'username': username, 'data': '', 'face_encoding': enc})
 
 @app.post('/login')
