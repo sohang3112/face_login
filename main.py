@@ -27,6 +27,8 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # FIXME - in a real app, this should be replaced with a database
+# Here, "data" is actual user data that should be stored for every user.
+# As this is a demo project, an empty string is stored as dummy user data.
 users: Dict[str, str] = []    # [ { username, data, face_encoding } ]
 
 @app.get('/')
