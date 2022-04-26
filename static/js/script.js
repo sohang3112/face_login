@@ -19,16 +19,20 @@ async function login() {
         if (error.status == 401) {  // unauthorized
             username = prompt('NEW USER\nYou have not registered yet.\nPlease enter username to register now')
             await postJSON('/register', { username, imageUrl });
+        } else {
+            throw error;
         }
     }
 };
 
 async function postJSON(url, data) {
-    await fetch(url, {
+    response = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
     });
+    if (!response.ok)
+        throw response;
 }
