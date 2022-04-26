@@ -2,20 +2,22 @@
 Web-based Prototype for Login using Face Detection & Matching.
 
 ## Pre-Requisites
+- CMake must be installed (it is required by `dlib` Python package).
 - Python 3 and Pip must be installed and available on environment PATH.
-- Install uvicorn : `pip install uvicorn`. Make sure it is available on the environment PATH.
 
-## Installation & Running
-```
+## Installation
+```bash
 git clone https://github.com/sohang3112/face_login.git   # Clone this repository
 cd face_login
-pip install -r requirements.txt
 
-# Run the server using uvicorn
-uvicorn main:app
+# This might take a while
+# because building wheels for Python package dlib takes some time
+pip install -r requirements.txt        
 ```
 
-- After starting server by following these instructions, open http://localhost:8000 in your browser.
+## Running
+- Start the server using command `python -m uvicorn main:app` inside root directory of the repository.
+- Open http://localhost:8000 in your browser.
 - A browser popup should show, asking for WebCam access. Click Allow.
 - Your webcam will show on screen. 
 - Ensure proper lighting. There should be no other face in front of your webcam.
